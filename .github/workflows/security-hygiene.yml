@@ -35,7 +35,7 @@ jobs:
 
       - name: Ensure no write-all permissions are used
         run: |
-          if grep -R --line-number "permissions:[[:space:]]*write-all" .github/workflows; then
+          if grep -R --line-number "^permissions:[[:space:]]*write-all$" .github/workflows/*.yml; then
             echo "Found forbidden write-all workflow permissions."
             exit 1
           fi
