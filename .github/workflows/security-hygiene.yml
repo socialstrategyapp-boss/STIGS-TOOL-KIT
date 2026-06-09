@@ -1,0 +1,42 @@
+name: Security Hygiene
+
+on:
+  pull_request:
+    branches: ["main"] # Expand as needed.
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+  workflow-permissions-check:
+    name: Workflow Permissions Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure no write-all permissions are used
+        run: |
+          if grep -R --line-number "permissions:[[:space:]]*write-all" .github/workflows; then
+            echo "Found forbidden write-all workflow permissions."
+            exit 1
+          fi
+          echo "No write-all permissions detected."

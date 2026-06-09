@@ -1,0 +1,37 @@
+name: Trivy Repository Scan
+
+on:
+  push:
+    branches: ["main"] # Adjust for your release branches.
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "45 5 * * *" # Daily scan for vulnerabilities and misconfigurations.
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  trivy:
+    name: Scan Filesystem and Config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Trivy scan (filesystem + config)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
+          scanners: vuln,secret,misconfig
+          severity: CRITICAL,HIGH,MEDIUM
+          ignore-unfixed: true
+
+      - name: Upload Trivy SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif

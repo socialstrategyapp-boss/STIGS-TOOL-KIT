@@ -1,0 +1,56 @@
+# OS / system
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# Logs and reports
+*.log
+logs/
+reports/
+
+# Security scan artifacts
+*.sarif
+*.spdx
+*.cdx.json
+*.cyclonedx.json
+sbom/
+scan-results/
+trivy-results*
+osv-results*
+gitleaks-report*
+
+# Build and dependency artifacts
+node_modules/
+dist/
+build/
+out/
+coverage/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Package manager / tooling caches
+.npm/
+.yarn/
+.pnpm-store/
+.cache/
