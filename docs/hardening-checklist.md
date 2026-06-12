@@ -6,7 +6,7 @@ Use this checklist to baseline and continuously improve defensive security postu
 
 - [ ] Enable secret scanning in CI (Gitleaks and/or platform-native scanning)
 - [ ] Block commits that contain tokens, keys, or credentials
-- [ ] Rotate exposed secrets immediately upon detection
+- [ ] Rotate exposed secrets immediately
 - [ ] Store secrets in a dedicated secrets manager, not source control
 - [ ] Redact sensitive values from logs and error messages
 - [ ] Audit git history for historical secret exposure after any leak
