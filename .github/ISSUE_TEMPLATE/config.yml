@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security advisory (recommended for sensitive findings)
+    url: https://github.com/socialstrategyapp-boss/STIGS-TOOL-KIT/security/advisories/new
+    about: Use this for vulnerabilities that should not be disclosed publicly.
+  - name: Security policy
+    url: https://github.com/socialstrategyapp-boss/STIGS-TOOL-KIT/blob/main/SECURITY.md
+    about: Read the security policy before opening any security-related issue.

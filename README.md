@@ -1,40 +1,81 @@
-# Stigs tool box
+# Stigs Tool Kit
 
-Stigs tool box is a defensive security and hardening toolbox for repository, CI/CD, and supply-chain hygiene.
+A defense-in-depth security toolkit for repository, CI/CD, and supply-chain hardening.
+All workflows run out of the box on GitHub Actions — push to `main` or open a PR to activate them.
 
-It provides a practical baseline you can use immediately in GitHub for authorized security testing, secure development, and hardening workflows.
+---
 
-## Included defensive tooling
+## Defensive layers at a glance
 
-- **CodeQL analysis** (`.github/workflows/codeql.yml`)
-  - Static code analysis for common security weaknesses.
-- **Gitleaks secret scanning** (`.github/workflows/gitleaks.yml`)
-  - Detects committed secrets and exposed credentials.
-- **Trivy repository scan** (`.github/workflows/trivy.yml`)
-  - Scans filesystem content for vulnerabilities, secrets, and misconfigurations.
-- **OSV-Scanner dependency scan** (`.github/workflows/osv-scanner.yml`)
-  - Detects known vulnerabilities in open-source dependencies.
-- **OpenSSF Scorecard** (`.github/workflows/scorecard.yml`)
-  - Measures repository supply-chain security posture and best practices.
-- **Security hygiene workflow** (`.github/workflows/security-hygiene.yml`)
-  - Adds dependency review and a simple workflow-permissions safeguard.
-- **Dependabot updates** (`.github/dependabot.yml`)
-  - Automated dependency update PRs for common ecosystems.
+### Scanning and analysis
+
+| Workflow | What it does | Findings go to |
+|----------|-------------|----------------|
+| `codeql.yml` | Static analysis — injection, XSS, insecure deserialization, and more | Security → Code scanning |
+| `gitleaks.yml` | Detects secrets and credentials in git history (full depth) | Actions log |
+| `trivy.yml` | Scans files, configs, and containers for CVEs, secrets, and misconfigurations | Security → Code scanning |
+| `osv-scanner.yml` | Detects known-vulnerable open-source dependencies via the OSV database | Actions log |
+| `scorecard.yml` | Measures overall supply-chain security posture (OpenSSF) | Security → Code scanning |
+| `checkov.yml` | Policy-as-code scan for GitHub Actions, Dockerfiles, Terraform, Kubernetes | Security → Code scanning |
+| `actionlint.yml` | Lints every workflow file for syntax and logic errors | Actions log |
+| `zizmor.yml` | Security audit of workflow files: injection, permissions, unsafe patterns | Security → Code scanning |
+
+### Supply-chain and hygiene
+
+| File | What it does |
+|------|-------------|
+| `sbom.yml` | Generates a SPDX-JSON Software Bill of Materials on every push to `main` |
+| `security-hygiene.yml` | Dependency review on PRs + enforces SHA-pinned actions and no `write-all` permissions |
+| `dependabot.yml` | Automated dependency update PRs for Actions, npm, pip, and Docker |
+
+### Repository guardrails
+
+| File | What it does |
+|------|-------------|
+| `.github/CODEOWNERS` | Requires owner review for any change to workflows, docs, or security config |
+| `.github/ISSUE_TEMPLATE/security-finding.yml` | Structured triage form for scanner findings |
+| `.github/ISSUE_TEMPLATE/vulnerability-triage.yml` | Structured report form for vulnerability disclosures |
+
+### Runner hardening
+
+Every workflow uses `step-security/harden-runner` in `audit` mode, which records all outbound
+network calls made by the runner. Tighten to `block` mode with an `allowed-endpoints` list
+once you have profiled the expected egress for each workflow.
+
+---
 
 ## How to use
 
-1. Push changes to `main` or open a pull request against `main`.
-2. Go to **GitHub → Actions** and run workflows manually or let scheduled triggers run.
-3. Review findings in:
-   - **Security → Code scanning alerts** (for SARIF uploads: CodeQL/Trivy/Scorecard)
-   - **Workflow run logs** (for Gitleaks, OSV-Scanner, dependency review)
-4. Triage findings and remediate high/critical issues first.
+1. Push changes to `main` or open a pull request.
+2. Go to **GitHub → Actions** — workflows run automatically.
+3. Review findings:
+   - **Security → Code scanning alerts** — CodeQL, Trivy, Scorecard, Checkov, Zizmor
+   - **Actions run logs** — Gitleaks, OSV-Scanner, Actionlint, dependency review
+4. Triage critical and high findings first. See `docs/incident-response.md` for step-by-step guidance.
+5. Track findings with the structured issue templates.
 
-### Customization notes
+---
 
-- Workflow triggers include comments so you can customize branch scope and schedules.
-- Dependabot includes common ecosystems and can be trimmed to match your stack.
-- All workflows are configured with least-privilege permissions where practical.
+## Documentation
+
+| Doc | Description |
+|-----|-------------|
+| `docs/incident-response.md` | What to do when each scan fires — triage, contain, remediate, verify |
+| `docs/adoption-guide.md` | Per-stack setup guide: Node.js, Python, Docker, Terraform/Kubernetes |
+| `docs/hardening-checklist.md` | Full hardening checklist across secrets, deps, CI/CD, IaC, and more |
+| `SECURITY.md` | Security policy and how to report vulnerabilities |
+
+---
+
+## Customization
+
+- All workflow triggers include inline comments explaining what to change.
+- Dependabot ecosystems can be trimmed to match your actual stack.
+- All third-party actions are pinned to full commit SHAs — update pins via `dependabot.yml` (Actions ecosystem).
+- Checkov's `framework` list can be narrowed to only the IaC types you use.
+- CodeQL's `languages` list should be updated to match your codebase.
+
+---
 
 ## Disclaimer
 

@@ -1,0 +1,93 @@
+name: Security Finding
+description: Triage and track a finding from an automated scan (CodeQL, Trivy, Gitleaks, etc.)
+labels: ["security", "finding"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to track security findings produced by automated scans.
+        For **sensitive vulnerabilities** that should not be public, use GitHub's
+        [private security advisory](../../security/advisories/new) feature instead.
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Source tool
+      description: Which scanner produced this finding?
+      options:
+        - CodeQL
+        - Gitleaks
+        - Trivy
+        - OSV-Scanner
+        - OpenSSF Scorecard
+        - Checkov
+        - Actionlint
+        - Zizmor
+        - Dependabot
+        - Manual review
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+        - Informational
+    validations:
+      required: true
+
+  - type: input
+    id: component
+    attributes:
+      label: Affected component
+      placeholder: "e.g., .github/workflows/codeql.yml, package.json dependency X"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Finding description
+      description: What is the issue and why does it matter?
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Describe the Confidentiality / Integrity / Availability impact.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: |
+        Paste relevant scan output, alert links, log lines, or commit hashes.
+        Redact any secrets, credentials, or personal data before pasting.
+
+  - type: textarea
+    id: remediation
+    attributes:
+      label: Suggested remediation
+      description: Optional — describe the fix or mitigation you recommend.
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Initial status
+      options:
+        - Needs triage
+        - Confirmed — awaiting fix
+        - False positive
+        - Accepted risk
+    validations:
+      required: true
