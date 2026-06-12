@@ -1,0 +1,45 @@
+version: 2
+updates:
+  # Keep GitHub Actions up to date to reduce CI/CD supply-chain risk.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "security"
+
+  # JavaScript / Node.js projects (enable when package.json exists).
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "security"
+    ignore:
+      # Example: keep major upgrades manual if desired.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Python projects (enable when requirements/pyproject is present).
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "security"
+
+  # Docker base images (enable when Dockerfiles are added).
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
