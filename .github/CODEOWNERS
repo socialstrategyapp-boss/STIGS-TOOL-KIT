@@ -1,0 +1,22 @@
+# CODEOWNERS — every change to a security-sensitive path requires review
+# from the repository owner before merging.
+#
+# GitHub enforces this automatically when branch protection rules require
+# CODEOWNER approval. Enable "Require review from Code Owners" in:
+#   Settings → Branches → Branch protection rules for "main"
+
+# Workflow files — any CI/CD change must be approved.
+/.github/workflows/     @socialstrategyapp-boss
+
+# Dependabot config — supply-chain update policy.
+/.github/dependabot.yml @socialstrategyapp-boss
+
+# CODEOWNERS itself — prevent self-approval of ownership changes.
+/.github/CODEOWNERS     @socialstrategyapp-boss
+
+# Security policy and documentation.
+/SECURITY.md            @socialstrategyapp-boss
+/docs/                  @socialstrategyapp-boss
+
+# Repository root — catch anything not covered above.
+/*                      @socialstrategyapp-boss

@@ -1,0 +1,49 @@
+name: Zizmor Workflow Security Analysis
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/**"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/**"
+  schedule:
+    - cron: "0 8 * * 1" # Weekly Monday analysis.
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  zizmor:
+    name: Analyze workflow security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install zizmor
+        run: pip install zizmor --quiet
+
+      - name: Run zizmor (SARIF output)
+        # zizmor audits every workflow file for security anti-patterns:
+        # unpinned actions, script injection, excessive permissions, etc.
+        run: |
+          zizmor --format sarif . > zizmor.sarif
+          echo "Zizmor scan complete."
+        continue-on-error: true # Findings go to Code Scanning, not a hard build failure.
+
+      - name: Upload zizmor SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@dd903d2e4f5405488e5ef1422510ee31c8b32357 # v3
+        with:
+          sarif_file: zizmor.sarif
+          category: zizmor
